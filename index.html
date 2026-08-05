@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Thani & Krabi • Travel Journal 2026</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Chart.js for Expense Pie Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-light: #2d6a4f;
+            --accent: #d4a373;
+            --accent-soft: #f4a261;
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif;
+            /* ดึงรูป sand.jpg จากโฟลเดอร์โปรเจกต์ */
+            background: url('images/sand.jpg') center/cover fixed no-repeat;
+            color: #1e293b;
+        }
+
+        /* ปรับแผ่นการ์ดเนื้อหาให้โปร่งแสงเล็กน้อยเพื่อความอ่านง่ายและสวยงาม */
+        .card, .summary-card, .itinerary-section, .budget-card, .chart-box, .table-card, .voucher-card {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Hero Section */
+        .hero {
+            
+            position: relative;
+            height: 45vh;
+            min-height: 340px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.8) 100%), url('images/hero.jpeg') center/cover no-repeat;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 40px 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 750px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Sticky Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding: 14px 20px;
+            box-shadow: var(--shadow-sm);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* Container */
+        .container {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        /* 🌦️ Weather Forecast Widget UI */
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .weather-card {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-card::after {
+            content: '☀️';
+            position: absolute;
+            right: -10px;
+            bottom: -15px;
+            font-size: 5rem;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .weather-info h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .weather-info p {
+            font-size: 0.88rem;
+            opacity: 0.9;
+        }
+
+        .weather-temp {
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        /* 📊 Expense Dashboard & Pie Chart UI */
+        .budget-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .budget-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        
+        .budget-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .budget-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .budget-card.highlight {
+            background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%) !important;
+            color: #ffffff !important;
+            border: none;
+            box-shadow: 0 8px 20px rgba(27, 67, 50, 0.3);
+        }
+
+        .budget-card.highlight span {
+            color: #e2e8f0 !important; /* สีข้อความเป็นสีเทาสว่าง */
+            opacity: 1 !important;
+        }
+
+        .budget-card.highlight .amount {
+            color: #ffffff !important; /* สีตัวเลขเป็นสีขาวชัดเจน */
+            font-weight: 800;
+
+        }
+
+        .budget-card span {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .budget-card .amount {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .chart-box {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+        }
+
+        /* 📋 Expense Summary Table UI */
+        .table-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+
+        .expense-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .expense-table th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .expense-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: #334155;
+        }
+
+        .expense-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .expense-table .amount-col {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .expense-table tr.total-row {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* 🎟️ Booking / Voucher Section UI */
+        .voucher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .voucher-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px dashed var(--accent);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .voucher-card h4 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .voucher-info-item {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .voucher-code {
+            font-family: monospace;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            width: fit-content;
+            font-weight: 700;
+            border: 1px solid #fde68a;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(27, 67, 50, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: var(--primary-light);
+        }
+
+        /* Accordion Timeline Styles */
+        .diary-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .diary-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            bottom: 20px;
+            width: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .diary-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            margin-left: 45px;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .diary-card::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 24px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .diary-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: #ffffff;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .diary-card-header:hover {
+            background: #f8fafc;
+        }
+
+        .diary-date {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-soft);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .diary-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 2px;
+        }
+
+        .diary-cost-tag {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            border: 1px solid #fde68a;
+        }
+
+        .toggle-icon {
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+            margin-left: 10px;
+        }
+
+        .diary-card.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Collapsible Content */
+        .diary-card-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-out, padding 0.3s ease;
+            background: #fafafa;
+            border-top: 1px solid transparent;
+            padding: 0 24px;
+        }
+
+        .diary-card.open .diary-card-body {
+            max-height: 1200px;
+            padding: 20px 24px;
+            border-top-color: var(--border);
+        }
+
+        /* Activity Items & Category Badges */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .badge-cat {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .cat-transport { background: #e0f2fe; color: #0369a1; }
+        .cat-food { background: #ffedd5; color: #c2410c; }
+        .cat-activity { background: #dcfce7; color: #15803d; }
+        .cat-hotel { background: #f3e8ff; color: #6b21a8; }
+
+        .activity-time {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .activity-detail {
+            color: var(--text-main);
+            flex: 1;
+        }
+
+        .diary-actions {
+            display: flex;
+            gap: 10px;
+            border-top: 1px dashed var(--border);
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .btn-edit { color: var(--primary); }
+        .btn-edit:hover { background: #e8f5e9; }
+        .btn-delete { color: #dc2626; }
+        .btn-delete:hover { background: #fee2e2; }
+
+        /* Places & Interactive Lightbox Gallery */
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .place-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .place-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .place-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: filter 0.2s ease;
+        }
+
+        .place-card:hover .place-img {
+            filter: brightness(0.9);
+        }
+
+        .place-info {
+            padding: 18px;
+        }
+
+        .place-info h3 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .place-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Lightbox Overlay */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Modal Dialog */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-body {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .diary-timeline::before { display: none; }
+            .diary-card { margin-left: 0; }
+            .diary-card::before { display: none; }
+            .activity-item { flex-wrap: wrap; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO HEADER -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="badge">7-Day Southern Thailand Road Trip</span>
+            <h1>Surat Thani & Krabi</h1>
+            <p>24 – 30 August 2026 • Prapanrat & Pantita</p>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="#weather">Weather</a>
+        <a href="#budget">Budget & Chart</a>
+        <a href="#expense-summary">Expense Table</a>
+        <a href="#vouchers">Bookings</a>
+        <a href="#itinerary">Itinerary</a>
+        <a href="#places">Gallery</a>
+    </nav>
+
+    <!-- 🌦️ WEATHER FORECAST SECTION -->
+    <section class="container" id="weather">
+        <div class="section-header">
+            <h2 class="section-title">🌦️ Weather Forecast</h2>
+        </div>
+        <div class="weather-grid">
+            <div class="weather-card">
+                <div class="weather-info">
+                    <h4>Surat Thani</h4>
+                    <p>Partly Cloudy & Light Rain</p>
+                </div>
+                <div class="weather-temp">29°C</div>
+            </div>
+            <div class="weather-card" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);">
+                <div class="weather-info">
+                    <h4>Krabi (Ao Nang)</h4>
+                    <p>Tropical Breeze & Mild Waves</p>
+                </div>
+                <div class="weather-temp">31°C</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 📊 BUDGET DASHBOARD & PIE CHART -->
+    <section class="container" id="budget">
+        <div class="section-header">
+            <h2 class="section-title">📊 Expense Breakdown</h2>
+        </div>
+        <div class="budget-container">
+            <div class="budget-cards">
+                <div class="budget-card highlight">
+                    <span>Total Fixed Expenditure</span>
+                    <div class="amount" id="total-cost">฿0.00</div>
+                </div>
+                <div class="budget-card">
+                    <span>Cost Per Person (2 Persons)</span>
+                    <div class="amount" id="per-person-cost">฿0.00</div>
+                </div>
+            </div>
+            <div class="chart-box">
+                <canvas id="expenseChart" style="max-height: 230px;"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- 📋 EXPENSE SUMMARY TABLE SECTION -->
+    <section class="container" id="expense-summary">
+        <div class="section-header">
+            <h2 class="section-title">📋 Expense Summary Table</h2>
+        </div>
+        <div class="table-card">
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Item / Description</th>
+                        <th>Category</th>
+                        <th class="amount-col">Amount (THB)</th>
+                    </tr>
+                </thead>
+                <tbody id="summary-table-body">
+                    <!-- Dynamic summary rows generated from JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 🎟️ BOOKING & VOUCHER SECTION -->
+    <section class="container" id="vouchers">
+        <div class="section-header">
+            <h2 class="section-title">🎟️ Booking & Vouchers</h2>
+        </div>
+        <div class="voucher-grid">
+            <div class="voucher-card">
+                <h4>🚆 Train Ticket <span style="font-size: 0.8rem; color: var(--accent-soft);">SRT</span></h4>
+                <div class="voucher-info-item">Express Sleeper Train #83 (Bangkok → Surat Thani)</div>
+                <div class="voucher-code">PNR: SRT-882910</div>
+            </div>
+            <div class="voucher-card">
+                <h4>🏨 Khao Sok Resort</h4>
+                <div class="voucher-info-item">Khao Sok Riverside Cottages (2 Nights)</div>
+                <div class="voucher-code">CONF: KSRC-2026-AUG</div>
+            </div>
+            <div class="voucher-card">
+                <h4>🏨 Krabi Hotel</h4>
+                <div class="voucher-info-item">Days Inn by Wyndham Ao Nang (3 Nights)</div>
+                <div class="voucher-code">CONF: WYND-992182</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ITINERARY LOGS -->
+    <section class="container" id="itinerary">
+        <div class="section-header">
+            <h2 class="section-title">Visual Itinerary</h2>
+            <button class="btn-primary" onclick="openModal()">+ Add Log / Expense</button>
+        </div>
+
+        <div class="diary-timeline" id="diary-list">
+            <!-- Dynamic Accordion Logs injected here -->
+        </div>
+    </section>
+
+    <!-- HIGHLIGHT PLACES GALLERY WITH LIGHTBOX -->
+    <section class="container" id="places">
+        <div class="section-header">
+            <h2 class="section-title">📸 Destinations Gallery</h2>
+        </div>
+        <div class="places-grid">
+            <div class="place-card" onclick="openLightbox('images/ban-nam-rad.jpg')">
+                <img src="images/ban-nam-rad.jpg" alt="Ban Nam Rad Forest" class="place-img">
+                <div class="place-info">
+                    <h3>Ban Nam Rad Forest</h3>
+                    <p>Crystal clear freshwater forest. Click to expand photo.</p>
+                </div>
+            </div>
+            <div class="place-card" onclick="openLightbox('images/khao-sok.jpg')">
+                <img src="images/khao-sok.jpg" alt="Khao Sok National Park" class="place-img">
+                <div class="place-info">
+                    <h3>Khao Sok Rainforest</h3>
+                    <p>Ancient rainforest & river tubing. Click to expand photo.</p>
+                </div>
+            </div>
+            <div class="place-card" onclick="openLightbox('images/cheow-lan.jpeg')">
+                <img src="images/cheow-lan.jpeg" alt="Cheow Lan Lake" class="place-img">
+                <div class="place-info">
+                    <h3>Cheow Lan Lake</h3>
+                    <p>Longtail boat tours & raft houses. Click to expand photo.</p>
+                </div>
+            </div>
+            <div class="place-card" onclick="openLightbox('images/aonang.jpg')">
+                <img src="images/aonang.jpg" alt="Ao Nang Beach" class="place-img">
+                <div class="place-info">
+                    <h3>Ao Nang Beach</h3>
+                    <p>Golden hour sunsets & Monkey Trail. Click to expand photo.</p>
+                </div>
+            </div>
+            <div class="place-card" onclick="openLightbox('images/hong-island.jpeg')">
+                <img src="images/hong-island.jpeg" alt="Hong Island" class="place-img">
+                <div class="place-info">
+                    <h3>Hong Islands Tour</h3>
+                    <p>Hong Lagoon & 360° viewpoint. Click to expand photo.</p>
+                </div>
+            </div>
+            <div class="place-card" onclick="openLightbox('images/railay.jpeg')">
+                <img src="images/railay.jpeg" alt="Railay Beach" class="place-img">
+                <div class="place-info">
+                    <h3>Railay Beach</h3>
+                    <p>Phra Nang Cave & limestone cliffs. Click to expand photo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX OVERLAY -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <img src="" id="lightbox-img" class="lightbox-img" alt="Enlarged View">
+    </div>
+
+    <!-- MODAL FORM -->
+    <div class="modal-overlay" id="diaryModal">
+        <div class="modal-body">
+            <h3 class="serif" id="modal-title" style="font-size: 1.4rem; margin-bottom: 18px;">Add New Journal Entry</h3>
+            <form id="diaryForm" onsubmit="saveEntry(event)">
+                <input type="hidden" id="entry-id">
+                
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="entry-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Title / Location</label>
+                    <input type="text" id="entry-title" placeholder="e.g., Dinner at Kodam Kitchen" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Activities / Notes</label>
+                    <textarea id="entry-text" rows="3" placeholder="Write down activities or notes..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Expense Amount (THB)</label>
+                    <input type="number" id="entry-cost" step="0.01" min="0" placeholder="0.00" value="0">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-action" style="padding: 8px 16px;" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER WITH CUSTOM NAMES -->
+    <footer>
+        Crafted with ❤️ by Prapanrat & Pantita for our Southern Thailand Adventure
+    </footer>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        let expenseChart = null;
+
+        // Structured Itinerary Entries
+        let entries = JSON.parse(localStorage.getItem('full_trip_itinerary_v6')) || [
+            {
+                id: 1,
+                date: '2026-08-24',
+                title: '🚆 Travel Day: Bangkok → Surat Thani',
+                cost: 1448.00,
+                category: '🚌 Transport',
+                activities: [
+                    { time: '20:30', text: 'Depart from Bangkok Railway Station via overnight sleeper train' },
+                    { time: '07:16', text: 'Arrive at Surat Thani Railway Station (Phunphin)' }
+                ]
+            },
+            {
+                id: 2,
+                date: '2026-08-25',
+                title: '🌿 Day 1: Ban Nam Rad & Khao Sok',
+                cost: 3520.10,
+                category: '🏨 Hotel / Transport',
+                activities: [
+                    { time: '07:30', text: 'Breakfast near Phunphin Railway Station' },
+                    { time: '08:00', text: 'Private transfer to Ban Nam Rad Forest' },
+                    { time: '09:00 - 11:30', text: 'Ban Nam Rad: Kayaking, crystal spring swimming & photography' },
+                    { time: '12:00', text: 'Lunch local Thai food' },
+                    { time: '14:30', text: 'Check-in at Khao Sok Riverside Cottages & relax' },
+                    { time: '16:00 - 18:00', text: '🛶 River Tubing adventure along Khao Sok River (500 THB/p)' },
+                    { time: '19:00', text: 'Dinner at resort' },
+                    { time: '20:00 - 22:00', text: '🌙 Optional: Night Safari jungle trek (700 THB/p)' }
+                ]
+            },
+            {
+                id: 3,
+                date: '2026-08-26',
+                title: '🚤 Day 2: Cheow Lan Lake Full Day Tour',
+                cost: 0,
+                category: '🏝️ Tour (Included)',
+                activities: [
+                    { time: '07:00', text: 'Breakfast at resort' },
+                    { time: '08:00', text: 'Tour guide pick-up from resort' },
+                    { time: '09:00 - 16:30', text: 'Cheow Lan Lake Highlights: Longtail boat tour, Khao Sam Kloe, Floating raft house, Swimming, Kayaking & Cave trekking (Includes Lunch)' },
+                    { time: '17:00', text: 'Return to resort & relaxation' },
+                    { time: '19:00', text: 'Dinner at resort' }
+                ]
+            },
+            {
+                id: 4,
+                date: '2026-08-27',
+                title: '🚐 Day 3: Khao Sok → Ao Nang, Krabi',
+                cost: 2462.82,
+                category: '🏨 Hotel / Transport',
+                activities: [
+                    { time: '08:30', text: 'Shared Minivan transfer to Ao Nang, Krabi' },
+                    { time: '12:00', text: 'Check-in at Days Inn by Wyndham Ao Nang' },
+                    { time: '15:00', text: 'Walk along Ao Nang Beach & explore Monkey Trail' },
+                    { time: '18:00', text: 'Sunset viewing at Ao Nang Beach' },
+                    { time: '19:00', text: 'Dinner at Kodam Kitchen ⭐ & Night Market walk' }
+                ]
+            },
+            {
+                id: 5,
+                date: '2026-08-28',
+                title: '🏝️ Day 4: Hong Islands Tour',
+                cost: 0,
+                category: '🏝️ Tour (Included)',
+                activities: [
+                    { time: '08:30 - 15:00', text: 'Hong Island Day Tour: Hong Lagoon, 360° Viewpoint, Snorkeling & Kayaking (Includes Lunch)' },
+                    { time: 'National Park Fee', text: 'Thai Adult: 60 THB / Foreigner: 300 THB' },
+                    { time: 'Evening', text: 'Relax at TAN Tribe Cafe / Thai Massage' }
+                ]
+            },
+            {
+                id: 6,
+                date: '2026-08-29',
+                title: '🌊 Day 5: 4 Islands Tour (or Phi Phi Option)',
+                cost: 0,
+                category: '🏝️ Tour (Included)',
+                activities: [
+                    { time: '08:30 - 15:00', text: '4 Islands Tour: Chicken Island, Tup & Mor Island (Talay Waek), Poda Island, Phra Nang Cave Beach' },
+                    { time: '💡 Alternative', text: 'Recommended: Upgrade to Phi Phi Islands Tour (Maya Bay & Pileh Lagoon) if weather is good' }
+                ]
+            },
+            {
+                id: 7,
+                date: '2026-08-30',
+                title: '🧗 Day 6: Railay Beach Exploration & Departure',
+                cost: 0,
+                category: '🚌 Transport',
+                activities: [
+                    { time: '09:00', text: 'Longtail boat from Ao Nang to Railay Beach (100 THB/way)' },
+                    { time: '10:00 - 15:00', text: 'Railay Highlights: Phra Nang Beach, Princess Cave, Viewpoint & Rock Climbing' },
+                    { time: '16:00', text: 'Return to Ao Nang for souvenir shopping & departure' }
+                ]
+            }
+        ];
+
+        function render() {
+            const diaryList = document.getElementById('diary-list');
+            const summaryTableBody = document.getElementById('summary-table-body');
+            
+            diaryList.innerHTML = '';
+            summaryTableBody.innerHTML = '';
+
+            let totalCost = 0;
+            let chartData = [];
+            let chartLabels = [];
+
+            entries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            entries.forEach((item, index) => {
+                const cost = parseFloat(item.cost) || 0;
+                totalCost += cost;
+
+                if (cost > 0) {
+                    chartLabels.push(item.title.split(':')[0]);
+                    chartData.push(cost);
+                }
+
+                // Render Table Row
+                const tableRow = document.createElement('tr');
+                tableRow.innerHTML = `
+                    <td>${formatDate(item.date)}</td>
+                    <td>${escapeHtml(item.title)}</td>
+                    <td>${item.category || 'General'}</td>
+                    <td class="amount-col">฿${cost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                `;
+                summaryTableBody.appendChild(tableRow);
+
+                // Render Timeline Cards
+                let activitiesHTML = '';
+                if (item.activities && item.activities.length > 0) {
+                    activitiesHTML = `<div class="activity-list">` + 
+                        item.activities.map(act => {
+                            let catClass = 'cat-activity';
+                            let catLabel = 'Activity';
+                            const lowerText = act.text.toLowerCase();
+                            
+                            if (lowerText.includes('train') || lowerText.includes('transfer') || lowerText.includes('minivan') || lowerText.includes('boat')) {
+                                catClass = 'cat-transport'; catLabel = 'Transit';
+                            } else if (lowerText.includes('breakfast') || lowerText.includes('lunch') || lowerText.includes('dinner')) {
+                                catClass = 'cat-food'; catLabel = 'Dining';
+                            } else if (lowerText.includes('check-in') || lowerText.includes('resort') || lowerText.includes('stay')) {
+                                catClass = 'cat-hotel'; catLabel = 'Stay';
+                            }
+
+                            return `
+                                <div class="activity-item">
+                                    <span class="badge-cat ${catClass}">${catLabel}</span>
+                                    <span class="activity-time">${escapeHtml(act.time)}</span>
+                                    <span class="activity-detail">${escapeHtml(act.text)}</span>
+                                </div>
+                            `;
+                        }).join('') + 
+                    `</div>`;
+                } else if (item.text) {
+                    activitiesHTML = `<p style="white-space: pre-line; margin-bottom: 14px; font-size: 0.95rem; color: #4b5563;">${escapeHtml(item.text)}</p>`;
+                }
+
+                const itemEl = document.createElement('div');
+                const isOpenClass = index === 0 ? 'open' : '';
+                itemEl.className = `diary-card ${isOpenClass}`;
+                
+                itemEl.innerHTML = `
+                    <div class="diary-card-header" onclick="toggleCard(this)">
+                        <div>
+                            <div class="diary-date">📅 ${formatDate(item.date)}</div>
+                            <h3 class="diary-title">${escapeHtml(item.title)}</h3>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            ${cost > 0 ? `<div class="diary-cost-tag">฿${cost.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>` : ''}
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="diary-card-body">
+                        ${activitiesHTML}
+                        <div class="diary-actions">
+                            <button class="btn-action btn-edit" onclick="editEntry(${item.id})">Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteEntry(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+                diaryList.appendChild(itemEl);
+            });
+
+            // Append Total Row to Table
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'total-row';
+            totalRow.innerHTML = `
+                <td colspan="3" style="text-align: right; font-weight: 700;">Total Fixed Expense:</td>
+                <td class="amount-col" style="color: var(--primary); font-weight: 700;">฿${totalCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            `;
+            summaryTableBody.appendChild(totalRow);
+
+            document.getElementById('total-cost').innerText = `฿${totalCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('per-person-cost').innerText = `฿${(totalCost / 2).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            localStorage.setItem('full_trip_itinerary_v6', JSON.stringify(entries));
+            updateChart(chartLabels, chartData);
+        }
+
+        function updateChart(labels, data) {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            if (expenseChart) {
+                expenseChart.destroy();
+            }
+            expenseChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#1b4332', '#2d6a4f', '#d4a373', '#f4a261', '#e76f51'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                font: { family: 'Plus Jakarta Sans', size: 12 },
+                                padding: 15
+                            } 
+                        }
+                    }
+                }
+            });
+        }
+
+        /* Lightbox functions */
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        function toggleCard(headerEl) {
+            const card = headerEl.parentElement;
+            card.classList.toggle('open');
+        }
+
+        function openModal() {
+            document.getElementById('diaryForm').reset();
+            document.getElementById('entry-id').value = '';
+            document.getElementById('modal-title').innerText = 'Add New Journal Entry';
+            document.getElementById('diaryModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('diaryModal').style.display = 'none';
+        }
+
+        function saveEntry(e) {
+            e.preventDefault();
+            const id = document.getElementById('entry-id').value;
+            const date = document.getElementById('entry-date').value;
+            const title = document.getElementById('entry-title').value;
+            const text = document.getElementById('entry-text').value;
+            const cost = parseFloat(document.getElementById('entry-cost').value) || 0;
+
+            if (id) {
+                const index = entries.findIndex(item => item.id == id);
+                if (index !== -1) {
+                    entries[index].date = date;
+                    entries[index].title = title;
+                    entries[index].text = text;
+                    entries[index].cost = cost;
+                    delete entries[index].activities;
+                }
+            } else {
+                entries.push({ id: Date.now(), date, title, text, cost, category: 'General' });
+            }
+
+            closeModal();
+            render();
+        }
+
+        function editEntry(id) {
+            const item = entries.find(entry => entry.id === id);
+            if (!item) return;
+
+            document.getElementById('entry-id').value = item.id;
+            document.getElementById('entry-date').value = item.date;
+            document.getElementById('entry-title').value = item.title;
+            
+            if (item.activities) {
+                document.getElementById('entry-text').value = item.activities.map(a => `${a.time}: ${a.text}`).join('\n');
+            } else {
+                document.getElementById('entry-text').value = item.text || '';
+            }
+            
+            document.getElementById('entry-cost').value = item.cost || 0;
+
+            document.getElementById('modal-title').innerText = 'Edit Entry';
+            document.getElementById('diaryModal').style.display = 'flex';
+        }
+
+        function deleteEntry(id) {
+            if (confirm('Are you sure you want to delete this log entry?')) {
+                entries = entries.filter(item => item.id !== id);
+                render();
+            }
+        }
+
+        function formatDate(dateStr) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateStr).toLocaleDateString('en-US', options);
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        render();
+    </script>
+</body>
+
+</html>
